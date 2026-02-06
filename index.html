@@ -1,11 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <title>秘密の研究記録</title>
+    <title>Valhala Database</title>
+    <style>
+      body {
+        background-color: #05060a;
+        color: #e5e5e5;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 80px;
+      }
+      h1 {
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      .subtitle {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 40px;
+      }
+      .panel {
+        border: 1px solid #333;
+        padding: 24px 28px;
+        border-radius: 4px;
+        min-width: 320px;
+        background: radial-gradient(circle at top, #151822 0, #05060a 55%);
+        box-shadow: 0 0 18px rgba(0,0,0,0.7);
+      }
+      label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #aaa;
+      }
+      input[type="text"] {
+        width: 100%;
+        margin-top: 6px;
+        padding: 8px 10px;
+        border-radius: 2px;
+        border: 1px solid #444;
+        background-color: #05060a;
+        color: #e5e5e5;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #4cc9f0;
+        box-shadow: 0 0 4px #4cc9f0;
+      }
+      button {
+        margin-top: 16px;
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 2px;
+        border: 1px solid #4cc9f0;
+        background-color: #05060a;
+        color: #4cc9f0;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 11px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0b1018;
+      }
+      .log {
+        margin-top: 16px;
+        font-family: "SF Mono", Menlo, Consolas, monospace;
+        font-size: 11px;
+        color: #7dd3fc;
+        white-space: pre-wrap;
+      }
+      .warning {
+        color: #f97373;
+      }
+      .hint {
+        margin-top: 10px;
+        font-size: 10px;
+        color: #666;
+      }
+    </style>
+    <script>
+      // 検索対象の人物名と対応するページ
+      const PERSON_INDEX = {
+        "kisaragi rui": "kisaragi-rui.html",
+        "如月ルイ": "kisaragi-rui.html",
+        "noa": "noa.html",
+        "ノア": "noa.html"
+      };
+
+      function normalizeName(name) {
+        return name.trim().toLowerCase();
+      }
+
+      function searchPerson(event) {
+        event.preventDefault();
+        const input = document.getElementById("query");
+        const log = document.getElementById("log");
+        const raw = input.value;
+
+        if (!raw.trim()) {
+          log.innerHTML = "[SYSTEM] 入力が空です。識別子を指定してください。";
+          return;
+        }
+
+        const key = normalizeName(raw);
+        const target = PERSON_INDEX[key];
+
+        if (target) {
+          log.innerHTML =
+            "[SYSTEM] 照会中...\n" +
+            "[MATCH] 対象エンティティを検出: \"" + raw + "\"\n" +
+            "[ROUTE] " + target + " へ転送します。";
+          setTimeout(function () {
+            window.location.href = target;
+          }, 900);
+        } else {
+          log.innerHTML =
+            "[SYSTEM] 照会中...\n" +
+            "[WARN] 一致するレコードが見つかりません。\n" +
+            "[HINT] 登録済み識別子の一例: \"如月ルイ\", \"ノア\"";
+        }
+      }
+    </script>
   </head>
   <body>
-    <h1>第17想測ログ</h1>
-    <p>記録は現在非公開。アクセス権限を確認してください。</p>
+    <h1>VALHALA DATABASE</h1>
+    <div class="subtitle">UNAUTHORIZED ACCESS WILL BE LOGGED</div>
+
+    <div class="panel">
+      <form onsubmit="searchPerson(event)">
+        <label for="query">SUBJECT IDENTIFIER</label>
+        <input
+          id="query"
+          type="text"
+          name="q"
+          autocomplete="off"
+          placeholder="例: 如月ルイ / ノア / Kisaragi Rui"
+        />
+        <button type="submit">EXECUTE QUERY</button>
+      </form>
+      <div id="log" class="log">
+[SYSTEM] Valhala Database 接続完了。
+[INPUT] 照会したい人物名を入力してください。
+      </div>
+      <div class="hint">
+        ※ 一致した場合のみ、対象人物の詳細レコードへ自動遷移します。
+      </div>
+    </div>
   </body>
 </html>
